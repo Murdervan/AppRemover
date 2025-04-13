@@ -1,143 +1,127 @@
-@echo off
-:: Check if the script is running as administrator
-NET SESSION >nul 2>&1
-IF %ERRORLEVEL% NEQ 0 (
-    echo Running as Administrator is required.
-    echo Restarting with Administrator privileges...
-    powershell -Command "Start-Process cmd -ArgumentList '/c %~s0' -Verb RunAs"
-    exit
-)
+# Tjek om scriptet kører som administrator
+If (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole("Administrator")) {
+    Write-Host "Administrator-rettigheder kræves. Genstarter som administrator..."
+    Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
+    Exit
+}
 
-cls
-echo ====================================
-echo          Microsoft App Remover
-echo         made by Murdervan        
-echo https://github.com/murdervan/
-echo ====================================
-echo.
-echo This CMD script allows you to remove unwanted Microsoft apps from Windows.
-echo Select the apps you want to remove by entering their numbers separated by spaces.
-echo.
+Clear-Host
+Write-Host "===================================="
+Write-Host "         Microsoft App Remover      "
+Write-Host "          made by Murdervan         "
+Write-Host "    https://github.com/murdervan/   "
+Write-Host "====================================`n"
 
-:MENU
-echo ===========================
-echo      Microsoft App Remover Menu 
-echo ===========================
-echo.
+Function Show-Menu {
+    Write-Host "==========================="
+    Write-Host "   Microsoft App Remover Menu"
+    Write-Host "==========================="`n
 
-echo Essential Removals:
-echo 1. Remove Microsoft Store
-echo 2. Remove Microsoft Get Started
-echo 3. Remove Microsoft Get Help
-echo.
+    Write-Host "Essential Removals:"
+    Write-Host "1. Remove Microsoft Store"
+    Write-Host "2. Remove Microsoft Get Started"
+    Write-Host "3. Remove Microsoft Get Help`n"
 
-echo Gaming Apps:
-echo 4. Remove Xbox Gaming Overlay
-echo 5. Remove Xbox App
-echo 6. Remove Xbox Speech-to-Text Overlay
-echo 7. Remove Xbox Identity Provider
-echo.
+    Write-Host "Gaming Apps:"
+    Write-Host "4. Remove Xbox Gaming Overlay"
+    Write-Host "5. Remove Xbox App"
+    Write-Host "6. Remove Xbox Speech-to-Text Overlay"
+    Write-Host "7. Remove Xbox Identity Provider`n"
 
-echo Office and Communication:
-echo 8. Remove Microsoft Teams
-echo 9. Remove Microsoft OneDrive
-echo 10. Remove Microsoft Office Hub
-echo 11. Remove Microsoft Skype
-echo.
+    Write-Host "Office and Communication:"
+    Write-Host "8. Remove Microsoft Teams"
+    Write-Host "9. Remove Microsoft OneDrive"
+    Write-Host "10. Remove Microsoft Office Hub"
+    Write-Host "11. Remove Microsoft Skype`n"
 
-echo Entertainment and News:
-echo 12. Remove Microsoft Solitaire Collection
-echo 13. Remove Microsoft News
-echo 14. Remove Microsoft Photos
-echo 15. Remove Microsoft Movies  TV
-echo.
+    Write-Host "Entertainment and News:"
+    Write-Host "12. Remove Microsoft Solitaire Collection"
+    Write-Host "13. Remove Microsoft News"
+    Write-Host "14. Remove Microsoft Photos"
+    Write-Host "15. Remove Microsoft Movies & TV`n"
 
-echo Productivity and Tools:
-echo 16. Remove Microsoft Alarms  Clock
-echo 17. Remove Microsoft Weather
-echo 18. Remove Windows Mail & Calendar
-echo 19. Remove Windows Camera
-echo 20. Remove Windows Maps
-echo 21. Remove Microsoft Paint
-echo.
+    Write-Host "Productivity and Tools:"
+    Write-Host "16. Remove Microsoft Alarms & Clock"
+    Write-Host "17. Remove Microsoft Weather"
+    Write-Host "18. Remove Windows Mail & Calendar"
+    Write-Host "19. Remove Windows Camera"
+    Write-Host "20. Remove Windows Maps"
+    Write-Host "21. Remove Microsoft Paint`n"
 
-echo Miscellaneous:
-echo 22. Remove Microsoft Edge
-echo 23. Remove Windows Feedback Hub
-echo 24. Remove 3D Builder
-echo.
-echo 25. Remove ALL listed apps
-echo 26. Check Installed Microsoft Apps
-echo 27. Exit
-echo.
+    Write-Host "Miscellaneous:"
+    Write-Host "22. Remove Microsoft Edge"
+    Write-Host "23. Remove Windows Feedback Hub"
+    Write-Host "24. Remove 3D Builder`n"
 
-set /p choice=Choose apps to remove (e.g., 1 2 3 for Store, Get Started, and Get Help): 
+    Write-Host "25. Remove ALL listed apps"
+    Write-Host "26. Check Installed Microsoft Apps"
+    Write-Host "27. Exit`n"
+}
 
-for %%a in (%choice%) do (
-    if %%a==1 powershell -Command "Get-AppxPackage -allusers *WindowsStore* | Remove-AppxPackage"
-    if %%a==2 powershell -Command "Get-AppxPackage -allusers *Microsoft.Getstarted* | Remove-AppxPackage"
-    if %%a==3 powershell -Command "Get-AppxPackage *Microsoft.GetHelp* -AllUsers | Remove-AppxPackage"
-    if %%a==4 powershell -Command "Get-AppxPackage -AllUsers *Microsoft.XboxGamingOverlay* | Remove-AppxPackage"
-    if %%a==5 powershell -Command "Get-AppxPackage *Microsoft.XboxApp* | Remove-AppxPackage"
-    if %%a==6 powershell -Command "Get-AppxPackage *Microsoft.XboxSpeechToTextOverlay* | Remove-AppxPackage"
-    if %%a==7 powershell -Command "Get-AppxPackage *Microsoft.XboxIdentityProvider* | Remove-AppxPackage"
-    if %%a==8 powershell -Command "Get-AppxPackage *MicrosoftTeams* | Remove-AppxPackage"
-    if %%a==9 powershell -Command "Get-AppxPackage *Microsoft.OneDrive* | Remove-AppxPackage"
-    if %%a==10 powershell -Command "Get-AppxPackage *Microsoft.OfficeHub* | Remove-AppxPackage"
-    if %%a==11 powershell -Command "Get-AppxPackage *Microsoft.SkypeApp* | Remove-AppxPackage"
-    if %%a==12 powershell -Command "Get-AppxPackage *MicrosoftSolitaireCollection* | Remove-AppxPackage"
-    if %%a==13 powershell -Command "Get-AppxPackage *Microsoft.News* | Remove-AppxPackage"
-    if %%a==14 powershell -Command "Get-AppxPackage *Microsoft.Windows.Photos* | Remove-AppxPackage"
-    if %%a==15 powershell -Command "Get-AppxPackage *Microsoft.ZuneVideo* | Remove-AppxPackage"
-    if %%a==16 powershell -Command "Get-AppxPackage *Microsoft.Alarms* | Remove-AppxPackage"
-    if %%a==17 powershell -Command "Get-AppxPackage *Microsoft.BingWeather* | Remove-AppxPackage"
-    if %%a==18 powershell -Command "Get-AppxPackage *microsoft.windowscommunicationsapps* | Remove-AppxPackage"
-    if %%a==19 powershell -Command "Get-AppxPackage *Microsoft.WindowsCamera* | Remove-AppxPackage"
-    if %%a==20 powershell -Command "Get-AppxPackage *Microsoft.WindowsMaps* | Remove-AppxPackage"
-    if %%a==21 powershell -Command "Get-AppxPackage *Microsoft.MSPaint* | Remove-AppxPackage"
-    if %%a==22 powershell -Command "Get-AppxPackage *Microsoft.MicrosoftEdge* | Remove-AppxPackage"
-    if %%a==23 powershell -Command "Get-AppxPackage *Microsoft.WindowsFeedbackHub* | Remove-AppxPackage"
-    if %%a==24 powershell -Command "Get-AppxPackage *Microsoft.3DBuilder* | Remove-AppxPackage"
-    if %%a==25 call :RemoveAll
-    if %%a==26 call :CheckInstalled
-    if %%a==27 exit
-)
+Function Remove-App {
+    param ($PackageName)
+    Get-AppxPackage -AllUsers | Where-Object {$_.Name -like "*$PackageName*"} | Remove-AppxPackage -ErrorAction SilentlyContinue
+}
 
-goto MENU
+Function Remove-All {
+    Write-Host "`nRemoving all listed Microsoft apps..."
+    $apps = @(
+        "WindowsStore","YourPhone","Microsoft.Getstarted","Microsoft.GetHelp",
+        "Microsoft.XboxGamingOverlay","Microsoft.XboxApp","Microsoft.XboxSpeechToTextOverlay","Microsoft.XboxIdentityProvider",
+        "MicrosoftTeams","Microsoft.OneDrive","Microsoft.OfficeHub","Microsoft.SkypeApp",
+        "MicrosoftSolitaireCollection","Microsoft.News","Microsoft.Windows.Photos","Microsoft.ZuneVideo",
+        "Microsoft.Alarms","Microsoft.BingWeather","microsoft.windowscommunicationsapps","Microsoft.WindowsCamera",
+        "Microsoft.WindowsMaps","Microsoft.MSPaint","Microsoft.MicrosoftEdge","Microsoft.WindowsFeedbackHub","Microsoft.3DBuilder"
+    )
+    foreach ($app in $apps) {
+        Remove-App $app
+    }
+    Write-Host "`nAlle apps er blevet fjernet.`n"
+}
 
-:RemoveAll
-echo Removing all listed Microsoft apps...
-powershell -Command "
-Get-AppxPackage -allusers *WindowsStore* | Remove-AppxPackage;
-Get-AppxPackage *Microsoft.YourPhone* -AllUsers | Remove-AppxPackage;
-Get-AppxPackage -AllUsers *Microsoft.Getstarted* | Remove-AppxPackage;
-Get-AppxPackage *Microsoft.GetHelp* -AllUsers | Remove-AppxPackage;
-Get-AppxPackage -AllUsers *Microsoft.XboxGamingOverlay* | Remove-AppxPackage;
-Get-AppxPackage *Microsoft.XboxApp* | Remove-AppxPackage;
-Get-AppxPackage *Microsoft.XboxSpeechToTextOverlay* | Remove-AppxPackage;
-Get-AppxPackage *Microsoft.XboxIdentityProvider* | Remove-AppxPackage;
-Get-AppxPackage *MicrosoftTeams* | Remove-AppxPackage;
-Get-AppxPackage *Microsoft.OneDrive* | Remove-AppxPackage;
-Get-AppxPackage *MicrosoftSolitaireCollection* | Remove-AppxPackage;
-Get-AppxPackage *Microsoft.News* | Remove-AppxPackage;
-Get-AppxPackage *Microsoft.Windows.Photos* | Remove-AppxPackage;
-Get-AppxPackage *Microsoft.ZuneVideo* | Remove-AppxPackage;
-Get-AppxPackage *Microsoft.Alarms* | Remove-AppxPackage;
-Get-AppxPackage *Microsoft.BingWeather* | Remove-AppxPackage;
-Get-AppxPackage *microsoft.windowscommunicationsapps* | Remove-AppxPackage;
-Get-AppxPackage *Microsoft.WindowsCamera* | Remove-AppxPackage;
-Get-AppxPackage *Microsoft.WindowsMaps* | Remove-AppxPackage;
-Get-AppxPackage *Microsoft.MSPaint* | Remove-AppxPackage;
-Get-AppxPackage *Microsoft.MicrosoftEdge* | Remove-AppxPackage;
-Get-AppxPackage *Microsoft.WindowsFeedbackHub* | Remove-AppxPackage;
-Get-AppxPackage *Microsoft.3DBuilder* | Remove-AppxPackage;
-"
-echo All apps have been removed.
-goto MENU
+Function Check-Installed {
+    Write-Host "`nInstallerede Microsoft apps:`n"
+    Get-AppxPackage -AllUsers | Select-Object Name
+    Write-Host ""
+    Pause
+}
 
-:CheckInstalled
-echo Checking installed Microsoft apps...
-powershell -Command "Get-AppxPackage -AllUsers | Select Name"
-echo.
-pause
-goto MENU
+do {
+    Show-Menu
+    $choices = Read-Host "Vælg apps at fjerne (f.eks. 1 2 3 for Store, Get Started, Get Help)"
+    $choices = $choices -split "\s+"
+
+    foreach ($choice in $choices) {
+        switch ($choice) {
+            1  { Remove-App "WindowsStore" }
+            2  { Remove-App "Microsoft.Getstarted" }
+            3  { Remove-App "Microsoft.GetHelp" }
+            4  { Remove-App "Microsoft.XboxGamingOverlay" }
+            5  { Remove-App "Microsoft.XboxApp" }
+            6  { Remove-App "Microsoft.XboxSpeechToTextOverlay" }
+            7  { Remove-App "Microsoft.XboxIdentityProvider" }
+            8  { Remove-App "MicrosoftTeams" }
+            9  { Remove-App "Microsoft.OneDrive" }
+            10 { Remove-App "Microsoft.OfficeHub" }
+            11 { Remove-App "Microsoft.SkypeApp" }
+            12 { Remove-App "MicrosoftSolitaireCollection" }
+            13 { Remove-App "Microsoft.News" }
+            14 { Remove-App "Microsoft.Windows.Photos" }
+            15 { Remove-App "Microsoft.ZuneVideo" }
+            16 { Remove-App "Microsoft.Alarms" }
+            17 { Remove-App "Microsoft.BingWeather" }
+            18 { Remove-App "microsoft.windowscommunicationsapps" }
+            19 { Remove-App "Microsoft.WindowsCamera" }
+            20 { Remove-App "Microsoft.WindowsMaps" }
+            21 { Remove-App "Microsoft.MSPaint" }
+            22 { Remove-App "Microsoft.MicrosoftEdge" }
+            23 { Remove-App "Microsoft.WindowsFeedbackHub" }
+            24 { Remove-App "Microsoft.3DBuilder" }
+            25 { Remove-All }
+            26 { Check-Installed }
+            27 { exit }
+            default { Write-Host "`nUgyldigt valg: $choice`n" }
+        }
+    }
+
+} while ($true)
